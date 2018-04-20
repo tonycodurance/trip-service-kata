@@ -10,12 +10,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class TripServiceTest {
+    private static final User GUEST = null;
+
     @Test(expected = UserNotLoggedInException.class)
-    public void throws_an_exception_when_the_user_is_not_logged_in() {
+    public void should_throw_an_exception_when_the_user_is_not_logged_in() {
         TripServiceTestable tripService = new TripServiceTestable(null, null);
         User user = new User();
 
-        tripService.getTripsByUser(user);
+        tripService.getTripsByUser(user, GUEST);
     }
 
     @Test
@@ -26,7 +28,7 @@ public class TripServiceTest {
         User potentialFriend = new User();
         TripServiceTestable tripService = new TripServiceTestable(loggedInUser, new ArrayList<User>());
         
-        List<Trip> trips = tripService.getTripsByUser(potentialFriend);
+        List<Trip> trips = tripService.getTripsByUser(potentialFriend, loggedInUser);
         
         assertThat(trips, is(expectedTrips));    
     }
@@ -41,7 +43,7 @@ public class TripServiceTest {
         
         TripServiceTestable tripService = new TripServiceTestable(loggedInUser, asList(friend));
         
-        List<Trip> trips = tripService.getTripsByUser(friend);
+        List<Trip> trips = tripService.getTripsByUser(friend, loggedInUser);
         
         assertThat(trips, is(expectedFriendsTrips));    
     }
@@ -58,7 +60,7 @@ public class TripServiceTest {
         friend.addTrip(trip);
         TripServiceTestable tripService = new TripServiceTestable(loggedInUser, asList(friend));
         
-        List<Trip> trips = tripService.getTripsByUser(friend);
+        List<Trip> trips = tripService.getTripsByUser(friend, loggedInUser);
         
         assertThat(trips, is(expectedFriendsTrips));    
     }
@@ -78,7 +80,7 @@ public class TripServiceTest {
         friend.addTrip(secondTrip);
         TripServiceTestable tripService = new TripServiceTestable(loggedInUser, asList(friend));
 
-        List<Trip> trips = tripService.getTripsByUser(friend);
+        List<Trip> trips = tripService.getTripsByUser(friend, loggedInUser);
         
         assertThat(trips, is(expectedFriendsTrips));
     }
@@ -92,11 +94,6 @@ public class TripServiceTest {
             this.users = users;
         }
         
-	    @Override
-	    public User getLoggedUser() {
-            return user;
-        }
-
         @Override
         public List<Trip> findTripsByUser(User user) {
             return user.trips();
