@@ -22,8 +22,8 @@ public class TripService {
 		throw new UserNotLoggedInException();
 	}
 
-	private boolean userIsLoggedIn(User loggedUser) {
-		return loggedUser != null;
+	private boolean userIsLoggedIn(User user) {
+		return user != null;
 	}
 
 	private boolean usersAreFriends(User user, User potentialFriend) {
@@ -31,7 +31,7 @@ public class TripService {
 	}
 
 	protected List<Trip> findTripsByUser(User user) {
-		return user.trips();
+		return TripDAO.findTripsByUser(user);
 	}
 
 	protected User getLoggedUser() {
